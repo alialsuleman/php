@@ -28,7 +28,7 @@ class CartItem {
 class Cart{
 
 	protected $items=[] ;
-	static $index =0 ;
+	public $index =0 ;
 	public function addItem ($nameItem , $num){
         $flag=1;
 		foreach ($this->items  as $item){
@@ -40,20 +40,20 @@ class Cart{
 			}
 		}
 		if ($flag){
-			echo 	Cart::$index . "<br>" ;
-            $this->items[Cart::$index] = new CartItem($nameItem , $num) ; 
-            Cart::$index ++ ;
+			echo 	$this->index . "<br>" ;
+            $this->items[$this->index] = new CartItem($nameItem , $num) ; 
+            $this->index ++ ;
 		}
 		echo "item is added <br>" ;
 	}
-	public function dec ($nameItem , $num):bool{
+	public function delete ($nameItem , $num):bool{
 		$flag=1;
 		foreach ($this->items  as $item){
 			if ($item->product===$nameItem)
 			{
 				
 				if ($item->number < $num)break ;
-				$item->number = $num ;
+				$item->number -= $num ;
 				$flag=0; 
 				break; 
 			}
@@ -77,25 +77,36 @@ class Customer {
 	protected $lname  ;
 	protected $id  ;
 	protected $age  ;
-    public $ownCart  ;
-    public function __construct ($n,  $ln , $i , $ag){
+	protected $password;
+    public    $ownCart  ;
+    public function __construct ($n,  $ln , $i , $ag , $pas){
 
     	$this->name = $n; 
     	$this->age  = $ag;
     	$this->id   =$i ;
     	$this->lname=$ln ;
     	$this->ownCart = new Cart() ;
+    	$this->password=sha1($pas) ;
     }
 
     public function aboutPerson ()
     {
-    	echo  "name  : ".$this->name."  ".$this->lname."<br>age:".$this->age."<br>id: ".$this->id;
+    	echo  "name  : ".$this->name."  ".$this->lname."<br> password : ". $this->password ."<br> age:" . 
+    	$this->age ."<br>id: ".$this->id;
+    	echo '<br>' ;
+		echo '<br>' ;
+		echo '<br>' ;
+    	$this->ownCart->display() ;
+    	echo '<br>' ;
+		echo '<br>' ;
+		echo '<br>' ;
+
     }
 
 }
 
 
-$ali = new Customer("ali" , "suleman" ,123123, 20) ;
+$ali = new Customer("ali" , "suleman" ,123123, 20 , "ali@123") ;
 
 echo  '<pre>' ;
 var_dump($ali);
@@ -109,24 +120,38 @@ echo '<br>' ;
 echo '<br>' ;
 
 $ali->ownCart->addItem("iphone" , 11) ;
+
 $ali->ownCart->addItem("iphone" , 20) ; 
+
 $ali->ownCart->addItem("apple" , 2) ;
+
 $ali->ownCart->addItem("orange" , 1) ; 
+
+
 $ali->ownCart->display() ;
-if ($ali->ownCart->dec("iphone" , "10"))echo "the process is complete<br>" ;
+
+if ($ali->ownCart->delete("iphone" , "10"))echo "the process is complete<br>" ;
 else echo "error <br>" ;
 $ali->ownCart->display() ;
-if ($ali->ownCart->dec("orange" , "10"))echo "the process is complete<br>" ;
+
+if ($ali->ownCart->delete("orange" , "10"))echo "the process is complete<br>" ;
 else echo "error <br>" ;
 $ali->ownCart->display() ;
-if ($ali->ownCart->dec("apple" , "1"))echo "the process is complete<br>" ;
+
+if ($ali->ownCart->delete("apple" , "1"))echo "the process is complete<br>" ;
 else echo "error <br>" ;
+
 $ali->ownCart->display() ;
+
 
 
 
 echo '<br>' ;
 echo '<br>' ;
+
+
+$ali->aboutPerson() ;
+
 echo '<br>' ;
 echo '<br>' ;
 echo '<br>' ;
